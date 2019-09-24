@@ -7,9 +7,17 @@ export default class ChatScreen extends React.Component{
   render(){
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        <Text>Chat</Text>
       </View>
     );
   }
 }
-  
+
+const styles = StyleSheet.create({
+    container:{
+      flex: 1,
+      backgroundColor: "#c1c1c1",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  })
