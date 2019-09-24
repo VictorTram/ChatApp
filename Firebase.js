@@ -8,20 +8,18 @@ class Firebase{
     }
 
     init = () => {
-        firebase.initializeApp({SECRET_firebaseConfig});
+        firebase.initializeApp(SECRET_firebaseConfig);
     };
 
     observeAuth = () => {
-        firebase.auth.onAuthStateChanged(this.onAuthStateChanged);
+        firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
     }
 
     onAuthStateChanged = (user) => {
         if(!user){
             try{
                 firebase.auth().signInAnonymously();
-            }catch (message){
-
-            }
+            }catch (message){}
         }
     }
 
@@ -30,7 +28,7 @@ class Firebase{
     }
 
     get ref(){
-        return firebase.database.ref('message')
+        return firebase.database().ref('message')
     }
 
     parse = snapshot => {
@@ -51,26 +49,27 @@ class Firebase{
     on = callback => {
         this.ref
             .limitToLast(50)
-            .on('child_added', snapshot => callback(this.parse()))
+            .on('child_added', snapshot => callback(this.parse(snapshot)))
     }
 
     get timestamp() {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    send = (message) => {
-        for( let i = 0; i< message.length; i++){
-            const {text, user} = message[i];
+    send = messages => {
+        for( let i = 0; i< messages.length; i++){
+            const {text, user} = messages[i];
             const message = {
                 text,
                 user,
                 timestamp: this.timestamp,
-            }
+            };
+            this.append(message);
         };
-        this.append(message);
+        
     }
 
-    append = (message) => this.ref().push(message);
+    append = (message) => this.ref.push(message);
 
     off(){
         this.ref.off();
